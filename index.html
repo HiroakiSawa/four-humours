@@ -1,4 +1,4 @@
-<title>四体液説に基づいたタイプ診断</title>
+<title>四体液の秤</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +11,7 @@
     <p class="lead">『サレルノ養生訓』第83〜86章は、血・黄胆汁・粘液・黒胆汁のそれぞれが勝る人の姿を描いています。その記述から作った24の問いに答えると、あなたがどの気質の描写にいちばん近いかを判定します。</p>
   </header>
 
-  <div class="main">
+  <div class="main quiz-only" id="main">
     <div id="left">
       <div class="card" id="quiz">
         <div class="progress">
@@ -39,7 +39,7 @@
       <div class="card result" id="result" hidden></div>
     </div>
 
-    <div class="diagram-col">
+    <div class="diagram-col" id="diagram" hidden>
       <svg class="rota" id="rota" viewBox="0 0 400 400" role="img" aria-label="四つの気質の図。回答に応じて各区画の濃さと点の位置が変わります。">
         <g id="cells"></g>
         <rect x="50" y="50" width="300" height="300" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
@@ -65,10 +65,12 @@
           <circle r="7" fill="var(--ink)"/>
         </g>
       </svg>
+      <p class="caption">各区画の濃さは、その気質の描写との一致度を表します。点は四つの一致度を重みとして求めた位置です。</p>
     </div>
   </div>
 
   <section class="ref">
+    <div class="ref-body" id="ref" hidden>
     <h2>四体液の対応表</h2>
     <div class="table-wrap">
       <table>
@@ -80,6 +82,7 @@
           <tr><th><i class="dot" style="background:var(--phlegm)"></i>粘液</th><td class="classic">φλέγμα</td><td><span class="ar">بلغم</span> <span class="classic">balġam</span></td><td class="classic">phlegmaticus</td><td>冷・湿</td><td>水</td><td>冬</td><td>老年期</td><td>脳・肺</td></tr>
         </tbody>
       </table>
+    </div>
     </div>
     <p class="disclaimer">問いと判定は『サレルノ養生訓』第83〜86章の記述をもとに作成しました。歴史上の体液論を体験するための再構成で、現代心理学の性格検査ではありません。回答はこのブラウザ内にのみ保存されます。</p>
   </section>
@@ -119,7 +122,7 @@
     S:{name:'多血質',fluid:'血',ch:'第83章',color:'var(--blood)',pos:[125,125],
       latin:'sanguineus',
       desc:'多血質の人は生まれつき肉づきがよく、冗談を好みます。噂話に耳を傾け、恋と酒、宴と笑いに心を惹かれ、それが心を晴れやかにして言葉を甘くします。どんな仕事にも柔軟に合わせることができ、めったなことでは怒りません。',
-      traits:['冗談好き','噂を聞きたがる','恋と酒を好む','宴席と笑いを好む','言葉が甘い','仕事に適応しやすい','怒りにくい','気前がよい','愛情深い','快活','よく笑う','血色がよい','歌好き','肉づきがよい','大胆','恵み深い']},
+      traits:['太っている','冗談好き','噂を聞きたがる','恋と酒を好む','宴席と笑いを好む','言葉が甘い','仕事に適応しやすい','怒りにくい','気前がよい','愛情深い','快活','よく笑う','血色がよい','歌好き','肉づきがよい','大胆','恵み深い']},
     C:{name:'胆汁質',fluid:'黄胆汁',ch:'第84章',color:'var(--yellow)',pos:[275,125],
       latin:'cholericus',
       desc:'胆汁は激しい野心家の体液です。胆汁質の人はあらゆる人に抜きん出ようとし、学ぶのが速く、よく食べてすぐに育ちます。志が大きく最高のものを目指し、剛毅で策をめぐらし、怒りが激しく、大胆で抜け目がありません。体は乾いて太らず、引き締まっていて、色は黄色です。',
@@ -241,6 +244,7 @@
         <span class="toast" id="toast" role="status"></span>
       </div>`;
     $('quiz').hidden=true; $('result').hidden=false;
+    $('main').classList.remove('quiz-only'); $('diagram').hidden=false; $('ref').hidden=false;
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
       $('result').querySelectorAll('.mix-bar i').forEach(i=>i.style.width=i.dataset.w+'%'); }));
     updateDiagram();
@@ -255,7 +259,8 @@
     });
     $('retry').addEventListener('click',()=>{
       ans=new Array(N).fill(null); cur=0; save();
-      $('result').hidden=true; $('quiz').hidden=false; render();
+      $('result').hidden=true; $('quiz').hidden=false;
+      $('main').classList.add('quiz-only'); $('diagram').hidden=true; $('ref').hidden=true; render();
       $('quiz').scrollIntoView({behavior:'smooth',block:'start'});
     });
     $('result').scrollIntoView({behavior:'smooth',block:'start'});
