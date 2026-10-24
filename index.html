@@ -1,4 +1,4 @@
-<title>四体液によるタイプ診断</title>
+<title>四体液の秤</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,7 +90,7 @@
 
 <script>
 (function(){
-  // t: その問いが根拠とする気質。各気質6問、出題順は気質を順番に回す。
+  // t: その問いが根拠とする気質。各気質6問。出題順は毎回ランダム。
   const Q = [
     {t:'S',q:'冗談を言って人を笑わせるのが好きだ'},
     {t:'C',q:'誰よりも抜きん出たいという気持ちが強い'},
@@ -139,10 +139,15 @@
   const KEYS = ['S','C','P','M'];
   const N = Q.length, PER = N/4, ANS_LABEL=['そう思わない','あまりそう思わない','どちらとも','ややそう思う','そう思う'];
 
-  let ans = new Array(N).fill(null), cur = 0;
-  try{ const s = JSON.parse(localStorage.getItem('humours-salerno-v1')||'null');
-    if(s && Array.isArray(s.ans) && s.ans.length===N){ ans = s.ans; cur = Math.min(s.cur||0,N-1); } }catch(e){}
-  const save = ()=>{ try{ localStorage.setItem('humours-salerno-v1',JSON.stringify({ans,cur})); }catch(e){} };
+  // ans は問いの番号ごと、seq は出題順（問いの番号の並び）、cur は seq 上の位置。
+  const shuffle = ()=>{ const a=[...Array(N).keys()];
+    for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+  let ans = new Array(N).fill(null), seq = shuffle(), cur = 0;
+  try{ const s = JSON.parse(localStorage.getItem('humours-salerno-v2')||'null');
+    if(s && Array.isArray(s.ans) && s.ans.length===N && Array.isArray(s.seq) && s.seq.length===N
+       && [...s.seq].sort((a,b)=>a-b).every((v,i)=>v===i)){
+      ans = s.ans; seq = s.seq; cur = Math.min(s.cur||0,N-1); } }catch(e){}
+  const save = ()=>{ try{ localStorage.setItem('humours-salerno-v2',JSON.stringify({ans,seq,cur})); }catch(e){} };
 
   const $ = id=>document.getElementById(id);
   const ticks = $('ticks');
@@ -176,18 +181,18 @@
 
   function render(){
     $('count').textContent=`${cur+1} / ${N}`;
-    $('statement').textContent=Q[cur].q;
-    for(let i=0;i<5;i++) $('opt'+i).setAttribute('aria-pressed', ans[cur]===i?'true':'false');
-    [...ticks.children].forEach((t,i)=>{ t.classList.toggle('done',ans[i]!==null); t.classList.toggle('cur',i===cur); });
+    $('statement').textContent=Q[seq[cur]].q;
+    for(let i=0;i<5;i++) $('opt'+i).setAttribute('aria-pressed', ans[seq[cur]]===i?'true':'false');
+    [...ticks.children].forEach((t,i)=>{ t.classList.toggle('done',ans[seq[i]]!==null); t.classList.toggle('cur',i===cur); });
     $('back').disabled = cur===0;
     $('finish').hidden = ans.some(a=>a===null);
     updateDiagram();
   }
 
   function choose(i){
-    ans[cur]=i; save(); render();
-    const next = ans.findIndex((a,j)=>a===null && j>cur);
-    const anyEmpty = ans.findIndex(a=>a===null);
+    ans[seq[cur]]=i; save(); render();
+    const next = seq.findIndex((q,j)=>ans[q]===null && j>cur);
+    const anyEmpty = seq.findIndex(q=>ans[q]===null);
     setTimeout(()=>{
       if(next!==-1){ cur=next; }
       else if(anyEmpty!==-1){ cur=anyEmpty; }
@@ -258,7 +263,7 @@
       } else { $('toast').textContent=text; }
     });
     $('retry').addEventListener('click',()=>{
-      ans=new Array(N).fill(null); cur=0; save();
+      ans=new Array(N).fill(null); seq=shuffle(); cur=0; save();
       $('result').hidden=true; $('quiz').hidden=false;
       $('main').classList.add('quiz-only'); $('diagram').hidden=true; $('ref').hidden=true; render();
       $('quiz').scrollIntoView({behavior:'smooth',block:'start'});
