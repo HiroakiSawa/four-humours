@@ -1,0 +1,267 @@
+<title>四体液の秤</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;1,400;1,500&family=Amiri&display=swap">
+<link rel="stylesheet" href="style.css">
+
+<div class="wrap">
+  <header>
+    <h1>四体液の秤<span class="q" aria-hidden="true"><i style="background:var(--blood)"></i><i style="background:var(--yellow)"></i><i style="background:var(--phlegm)"></i><i style="background:var(--black)"></i></span></h1>
+    <p class="lead">『サレルノ養生訓』第83〜86章は、血・黄胆汁・粘液・黒胆汁のそれぞれが勝る人の姿を描いています。その記述から作った24の問いに答えると、あなたがどの気質の描写にいちばん近いかを判定します。</p>
+  </header>
+
+  <div class="main">
+    <div id="left">
+      <div class="card" id="quiz">
+        <div class="progress">
+          <span class="label" id="count">1 / 24</span>
+          <div class="ticks" id="ticks" aria-hidden="true"></div>
+        </div>
+        <div style="display:grid;gap:18px">
+          <p class="statement" id="statement"></p>
+          <div class="scale" id="scale" role="group" aria-label="回答の尺度">
+            <button type="button" id="opt0" aria-label="そう思わない"></button>
+            <button type="button" id="opt1" aria-label="あまりそう思わない"></button>
+            <button type="button" id="opt2" aria-label="どちらとも言えない"></button>
+            <button type="button" id="opt3" aria-label="ややそう思う"></button>
+            <button type="button" id="opt4" aria-label="そう思う"></button>
+          </div>
+          <div class="scale-legend"><span>そう思わない</span><span>どちらとも</span><span>そう思う</span></div>
+        </div>
+        <div class="nav">
+          <button class="btn" type="button" id="back">前の問い</button>
+          <span class="hint">キーボードの 1〜5 でも回答できます</span>
+          <button class="btn primary" type="button" id="finish" hidden>結果を見る</button>
+        </div>
+      </div>
+
+      <div class="card result" id="result" hidden></div>
+    </div>
+
+    <div class="diagram-col">
+      <svg class="rota" id="rota" viewBox="0 0 400 400" role="img" aria-label="四つの気質の図。回答に応じて各区画の濃さと点の位置が変わります。">
+        <g id="cells"></g>
+        <rect x="50" y="50" width="300" height="300" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+        <g stroke="var(--rule)" stroke-width="1">
+          <line x1="200" y1="50" x2="200" y2="350"/><line x1="50" y1="200" x2="350" y2="200"/>
+        </g>
+        <text class="side" x="200" y="34" text-anchor="middle">熱</text>
+        <text class="side" x="200" y="382" text-anchor="middle">冷</text>
+        <text class="side" x="374" y="207" text-anchor="middle">乾</text>
+        <text class="side" x="26" y="207" text-anchor="middle">湿</text>
+
+        <g><text class="corner-name" x="338" y="76" text-anchor="end" style="fill:var(--yellow)">黄胆汁</text>
+          <text class="corner-sub" x="338" y="93" text-anchor="end">火・夏・青年期</text></g>
+        <g><text class="corner-name" x="62" y="76" style="fill:var(--blood)">血</text>
+          <text class="corner-sub" x="62" y="93">空気・春・幼年期</text></g>
+        <g><text class="corner-name" x="338" y="324" text-anchor="end" style="fill:var(--black)">黒胆汁</text>
+          <text class="corner-sub" x="338" y="340" text-anchor="end">土・秋・壮年期</text></g>
+        <g><text class="corner-name" x="62" y="324" style="fill:var(--phlegm)">粘液</text>
+          <text class="corner-sub" x="62" y="340">水・冬・老年期</text></g>
+
+        <g id="marker" transform="translate(200 200)">
+          <circle r="15" fill="none" stroke="var(--ink)" stroke-width="1" opacity=".35"/>
+          <circle r="7" fill="var(--ink)"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <section class="ref">
+    <h2>四体液の対応表</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>体液</th><th>ギリシア語</th><th>アラビア語</th><th>気質（ラテン語）</th><th>性質</th><th>元素</th><th>季節</th><th>人生の時期</th><th>主な臓器</th></tr></thead>
+        <tbody>
+          <tr><th><i class="dot" style="background:var(--blood)"></i>血</th><td class="classic">αἷμα</td><td><span class="ar">دم</span> <span class="classic">dam</span></td><td class="classic">sanguineus</td><td>熱・湿</td><td>空気</td><td>春</td><td>幼年期</td><td>肝臓・心臓</td></tr>
+          <tr><th><i class="dot" style="background:var(--yellow)"></i>黄胆汁</th><td class="classic">χολὴ ξανθή</td><td><span class="ar">صفراء</span> <span class="classic">ṣafrāʾ</span></td><td class="classic">cholericus</td><td>熱・乾</td><td>火</td><td>夏</td><td>青年期</td><td>胆嚢</td></tr>
+          <tr><th><i class="dot" style="background:var(--black)"></i>黒胆汁</th><td class="classic">μέλαινα χολή</td><td><span class="ar">سوداء</span> <span class="classic">sawdāʾ</span></td><td class="classic">melancholicus</td><td>冷・乾</td><td>土</td><td>秋</td><td>壮年期</td><td>脾臓</td></tr>
+          <tr><th><i class="dot" style="background:var(--phlegm)"></i>粘液</th><td class="classic">φλέγμα</td><td><span class="ar">بلغم</span> <span class="classic">balġam</span></td><td class="classic">phlegmaticus</td><td>冷・湿</td><td>水</td><td>冬</td><td>老年期</td><td>脳・肺</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="disclaimer">問いと判定は『サレルノ養生訓』第83〜86章の記述をもとに作成しました。歴史上の体液論を体験するための再構成で、現代心理学の性格検査ではありません。回答はこのブラウザ内にのみ保存されます。</p>
+  </section>
+</div>
+
+<script>
+(function(){
+  // t: その問いが根拠とする気質。各気質6問、出題順は気質を順番に回す。
+  const Q = [
+    {t:'S',q:'冗談を言って人を笑わせるのが好きだ'},
+    {t:'C',q:'誰よりも抜きん出たいという気持ちが強い'},
+    {t:'P',q:'暇な時間があると、勉強するより眠ってしまう'},
+    {t:'M',q:'口数が少なく、無口なほうだ'},
+    {t:'S',q:'人の噂話や世間の話題を、いろいろ聞きたくなる'},
+    {t:'C',q:'新しいことを学ぶと、のみこみが早い'},
+    {t:'P',q:'よく眠り、眠気に負けやすい'},
+    {t:'M',q:'考えごとをしていると頭が冴えて、なかなか寝つけない'},
+    {t:'S',q:'宴会や酒の席、にぎやかな笑いの場が好きだ'},
+    {t:'C',q:'食欲が旺盛で、よく食べる'},
+    {t:'P',q:'動作がゆっくりしている'},
+    {t:'M',q:'与えられた課題には、最後まで忠実に取り組む'},
+    {t:'S',q:'めったに怒らない'},
+    {t:'C',q:'大きな志を持ち、最高のものを目指す'},
+    {t:'P',q:'まわりの変化に気づくのが遅いほうだ'},
+    {t:'M',q:'何事も、これで絶対に安心ということはないと思う'},
+    {t:'S',q:'気前がよく、人にふるまうのが好きだ'},
+    {t:'C',q:'怒るときは激しく怒る'},
+    {t:'P',q:'何かと面倒になり、怠けがちだ'},
+    {t:'M',q:'人をうらやましく思うことが多い'},
+    {t:'S',q:'血色がよく、肉づきがよい'},
+    {t:'C',q:'体は引き締まって太っておらず、顔色は黄みがかっている'},
+    {t:'P',q:'脂肪がつきやすく、顔色は白い'},
+    {t:'M',q:'顔色は浅黒い'}
+  ];
+
+  const T = {
+    S:{name:'多血質',fluid:'血',ch:'第83章',color:'var(--blood)',pos:[125,125],
+      latin:'sanguineus',
+      desc:'多血質の人は生まれつき肉づきがよく、冗談を好みます。噂話に耳を傾け、恋と酒、宴と笑いに心を惹かれ、それが心を晴れやかにして言葉を甘くします。どんな仕事にも柔軟に合わせることができ、めったなことでは怒りません。',
+      traits:['太っている','冗談好き','噂を聞きたがる','恋と酒を好む','宴席と笑いを好む','言葉が甘い','仕事に適応しやすい','怒りにくい','気前がよい','愛情深い','快活','よく笑う','血色がよい','歌好き','肉づきがよい','大胆','恵み深い']},
+    C:{name:'胆汁質',fluid:'黄胆汁',ch:'第84章',color:'var(--yellow)',pos:[275,125],
+      latin:'cholericus',
+      desc:'胆汁は激しい野心家の体液です。胆汁質の人はあらゆる人に抜きん出ようとし、学ぶのが速く、よく食べてすぐに育ちます。志が大きく最高のものを目指し、剛毅で策をめぐらし、怒りが激しく、大胆で抜け目がありません。体は乾いて太らず、引き締まっていて、色は黄色です。',
+      traits:['野心家','抜きん出たい','学習が機敏','よく食べる','成長が早い','気宇壮大','最高を目指す','剛毅','策略をめぐらす','怒りが激しい','強大','大胆','老獪','体が乾いて引き締まる','色が黄色い']},
+    P:{name:'粘液質',fluid:'粘液',ch:'第85章',color:'var(--phlegm)',pos:[125,275],
+      latin:'phlegmaticus',
+      desc:'粘液は大きな力を与えず、体格をずんぐりさせます。脂肪をつくり、血を濃くして、力を弱めます。粘液質の人は暇を学びに使わず眠りに使い、感覚は鈍く、動きは遅く、怠惰でよく眠ります。唾が多く、脂肪質で、顔色は白いとされます。',
+      traits:['力が強くない','ずんぐりした体格','脂肪が多い','学ぶより眠る','感覚が鈍い','動きが遅い','怠惰','よく眠る','唾が多い','顔色が白い']},
+    M:{name:'憂鬱質',fluid:'黒胆汁',ch:'第86章',color:'var(--black)',pos:[275,275],
+      latin:'melancholicus',
+      desc:'黒胆汁は憂鬱をもたらし、人をひねくれさせ、陰鬱で無口にします。憂鬱質の人はいつまでも目覚めて探究を続け、心はなかなか眠りにつきません。課題に忠実で、何ひとつ最終的に安全なものはないと考えます。嫉妬深く、欲望に駆られやすく、物事に固執し、欺きと無縁ではなく、臆病な面があり、色は浅黒いとされます。',
+      traits:['ひねくれている','陰鬱','無口','目覚めて探究し続ける','なかなか眠らない','課題に忠実','何事にも安心しない','嫉妬深い','欲望に駆られやすい','固執しやすい','欺瞞の気味がある','臆病','色が浅黒い']}
+  };
+  const KEYS = ['S','C','P','M'];
+  const N = Q.length, PER = N/4, ANS_LABEL=['そう思わない','あまりそう思わない','どちらとも','ややそう思う','そう思う'];
+
+  let ans = new Array(N).fill(null), cur = 0;
+  try{ const s = JSON.parse(localStorage.getItem('humours-salerno-v1')||'null');
+    if(s && Array.isArray(s.ans) && s.ans.length===N){ ans = s.ans; cur = Math.min(s.cur||0,N-1); } }catch(e){}
+  const save = ()=>{ try{ localStorage.setItem('humours-salerno-v1',JSON.stringify({ans,cur})); }catch(e){} };
+
+  const $ = id=>document.getElementById(id);
+  const ticks = $('ticks');
+  Q.forEach(()=>ticks.appendChild(document.createElement('span')));
+
+  // 四つの区画（左が湿、右が乾）
+  const cellsG = $('cells'), cells = {};
+  KEYS.forEach(k=>{
+    const el=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    el.setAttribute('x',T[k].pos[0]-75); el.setAttribute('y',T[k].pos[1]-75);
+    el.setAttribute('width',150); el.setAttribute('height',150);
+    el.setAttribute('class','cell'); el.style.fill=T[k].color; el.setAttribute('fill-opacity','.06');
+    cellsG.appendChild(el); cells[k]=el;
+  });
+
+  // 各気質の一致度（0〜1）。未回答の問いは数えない。
+  function scores(){
+    const sum={S:0,C:0,P:0,M:0}, n={S:0,C:0,P:0,M:0};
+    Q.forEach((q,i)=>{ if(ans[i]===null) return; sum[q.t]+=ans[i]; n[q.t]++; });
+    const o={}; KEYS.forEach(k=>o[k]= n[k]? sum[k]/(n[k]*4) : 0); return o;
+  }
+
+  function updateDiagram(){
+    const sc=scores();
+    let wsum=0,x=0,y=0;
+    KEYS.forEach(k=>{ const w=sc[k]*sc[k]; wsum+=w; x+=w*T[k].pos[0]; y+=w*T[k].pos[1];
+      cells[k].setAttribute('fill-opacity',(0.06+0.36*sc[k]).toFixed(3)); });
+    if(wsum>0){ x/=wsum; y/=wsum; } else { x=200; y=200; }
+    $('marker').setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+  }
+
+  function render(){
+    $('count').textContent=`${cur+1} / ${N}`;
+    $('statement').textContent=Q[cur].q;
+    for(let i=0;i<5;i++) $('opt'+i).setAttribute('aria-pressed', ans[cur]===i?'true':'false');
+    [...ticks.children].forEach((t,i)=>{ t.classList.toggle('done',ans[i]!==null); t.classList.toggle('cur',i===cur); });
+    $('back').disabled = cur===0;
+    $('finish').hidden = ans.some(a=>a===null);
+    updateDiagram();
+  }
+
+  function choose(i){
+    ans[cur]=i; save(); render();
+    const next = ans.findIndex((a,j)=>a===null && j>cur);
+    const anyEmpty = ans.findIndex(a=>a===null);
+    setTimeout(()=>{
+      if(next!==-1){ cur=next; }
+      else if(anyEmpty!==-1){ cur=anyEmpty; }
+      else { showResult(); return; }
+      save(); render();
+    },220);
+  }
+
+  for(let i=0;i<5;i++) $('opt'+i).addEventListener('click',()=>choose(i));
+  $('back').addEventListener('click',()=>{ if(cur>0){cur--;save();render();} });
+  $('finish').addEventListener('click',showResult);
+  document.addEventListener('keydown',e=>{
+    if($('quiz').hidden || e.metaKey||e.ctrlKey||e.altKey) return;
+    const n=parseInt(e.key,10); if(n>=1&&n<=5){ choose(n-1); }
+    if(e.key==='ArrowLeft' && cur>0){cur--;save();render();}
+  });
+
+  function showResult(){
+    const sc=scores(); const pct=v=>Math.round(v*100);
+    const order=[...KEYS].sort((a,b)=>sc[b]-sc[a]);
+    const best=pct(sc[order[0]]);
+    const tops=order.filter(k=>pct(sc[k])===best);
+    const top=T[tops[0]];
+    const tie = tops.length>1;
+
+    const head = tie
+      ? `<h2>${tops.map(k=>`<span style="color:${T[k].color}">${T[k].name}</span>`).join('<span style="color:var(--muted);font-weight:500">・</span>')}</h2>
+         <p class="names">${tops.length}つの気質が同じ一致度で並びました。</p>`
+      : `<h2 style="color:${top.color}">${top.name}</h2>
+         <p class="names"><span class="classic">${top.latin}</span><span>『サレルノ養生訓』${top.ch}</span></p>`;
+
+    const block = k=>{
+      const t=T[k];
+      const items=Q.map((q,i)=>({q,i})).filter(o=>o.q.t===k);
+      return `<div class="source">
+        ${tie?`<h3 style="color:${t.color}">${t.name}　<span class="label">${t.ch}</span></h3>`:`<h3>${t.ch}の描写</h3>`}
+        <p>${t.desc}</p>
+        <ul class="chips">${t.traits.map(x=>`<li>${x}</li>`).join('')}</ul>
+        <div><span class="label">判定に使った問いとあなたの回答</span>
+        <ul class="items">${items.map(o=>`<li><span>${o.q.q}</span><span class="ans a${ans[o.i]}">${ANS_LABEL[ans[o.i]]}</span></li>`).join('')}</ul></div>
+      </div>`;
+    };
+
+    $('result').innerHTML = `
+      <div class="verdict"><span class="eyebrow">あなたにいちばん近い気質</span>${head}</div>
+      <div class="mix"><span class="label">各気質の描写との一致度</span>
+        ${order.map(k=>{const t=T[k];return `<div class="mix-row"><span>${t.name}</span>
+          <div class="mix-bar"><i style="width:0;background:${t.color}" data-w="${pct(sc[k])}"></i></div><span>${pct(sc[k])}%</span></div>`}).join('')}
+      </div>
+      ${tops.map(block).join('')}
+      <div class="actions">
+        <button class="btn primary" type="button" id="copy">結果をコピー</button>
+        <button class="btn" type="button" id="retry">最初からやり直す</button>
+        <span class="toast" id="toast" role="status"></span>
+      </div>`;
+    $('quiz').hidden=true; $('result').hidden=false;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      $('result').querySelectorAll('.mix-bar i').forEach(i=>i.style.width=i.dataset.w+'%'); }));
+    updateDiagram();
+
+    const text = `四体液の秤（『サレルノ養生訓』第83〜86章）：${tops.map(k=>T[k].name).join('・')}／`+
+      order.map(k=>`${T[k].name}${pct(sc[k])}%`).join('・');
+    $('copy').addEventListener('click',()=>{
+      const done=()=>{$('toast').textContent='コピーしました';};
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(()=>{$('toast').textContent=text;});
+      } else { $('toast').textContent=text; }
+    });
+    $('retry').addEventListener('click',()=>{
+      ans=new Array(N).fill(null); cur=0; save();
+      $('result').hidden=true; $('quiz').hidden=false; render();
+      $('quiz').scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    $('result').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  render();
+  if(ans.every(a=>a!==null)) showResult();
+})();
+</script>
